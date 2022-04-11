@@ -6,7 +6,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   name: 'cdk-repository-template',
   release: true,
   defaultReleaseBranch: 'production',
-  majorVersion: 1,
+  majorVersion: 0,
   depsUpgradeOptions: {
     workflowOptions: {
       branches: ['acceptance'],

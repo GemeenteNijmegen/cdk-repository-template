@@ -1,9 +1,10 @@
 # Template repository for Gemeente Nijmegen cdk projects
+After completing the instructions in this REAMDE replace the file with a project relevant readme.
 
 ## Getting started
 This repository can be used as a Github template to start new cdk projects for Gemeente Nijmegen.
 
-### Setup workflow configuration
+### 1. Setup workflow configuration
 It is important to configure a personal access token as a Github workflow secret.
 
 * Create a new personal access token under your account settings
@@ -14,7 +15,7 @@ It is important to configure a personal access token as a Github workflow secret
 
 **Note:** this can be dangerous as everybody with write access to the repository can now acces your personal access token. (A PR from a fork will not have acces to the workflow secrets.)
 
-### Branch protection
+### 2. Branch protection
 Github does not include branch protection configuration while using a repository as a template.
 
 Recommended branch protection: 
@@ -26,3 +27,5 @@ Recommended branch protection:
         * pull-request-lint (workflow)
     *  Include administrators
 
+### 3. First release
+Current releases are v0.*. For a first release to do a major version bump increase the major version in .projenrc from 0 to 1.
