@@ -29,7 +29,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
  * buidl process, however the setup of the linter cannot be added to
  * the existing workflow nor can the build task be altered.
  */
-project.buildWorkflow.addPostBuildJob('CloudFormation lint', {
+project.buildWorkflow.addPostBuildJob('CloudFormation-lint', {
   runsOn: ['ubuntu-latest'],
   permissions: {
     contents: JobPermission.READ,

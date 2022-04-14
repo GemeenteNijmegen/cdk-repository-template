@@ -74,7 +74,7 @@ jobs:
             git add .
             git commit -s -m "chore: self mutation"
             git push origin HEAD:${{ github.event.pull_request.head.ref }}
-  CloudFormation lint:
+  CloudFormation-lint:
     needs: build
     runs-on: ubuntu-latest
     permissions:
