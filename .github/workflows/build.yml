@@ -23,8 +23,8 @@ jobs:
         run: yarn install --check-files
       - name: build
         run: npx projen build
-      - name: Copy cdk.out to dist
-        run: mkdir -p dist && cp -r cdk.out dist/cdk.out
+      - - name: Copy cdk.out to dist
+          run: mkdir -p dist && cp -r cdk.out dist/cdk.out
       - id: self_mutation
         name: Find mutations
         run: |-
@@ -93,4 +93,4 @@ jobs:
       - name: Restore cdk.out directory
         run: cp -r dist/cdk.out cdk.out
       - name: Run cfn-lint
-        run: npx projen lint
+        run: cfn-lint cdk.out/**/*.template.json -i W3005 W2001

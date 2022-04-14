@@ -21,12 +21,6 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   scripts: {
     lint: 'cfn-lint cdk.out/**/*.template.json -i W3005 W2001',
   },
-  postBuildSteps: [
-    {
-      name: 'Copy cdk.out to dist',
-      run: 'mkdir -p dist && cp -r cdk.out dist/cdk.out',
-    },
-  ],
 });
 
 /**
@@ -39,6 +33,12 @@ const project = new awscdk.AwsCdkTypeScriptApp({
  * A neater alternative is the artifactsDirectory configuration option,
  * however changing the artifactsDirectory breaks the release build workflow.
  */
+project.buildWorkflow.addPostBuildSteps([
+  {
+    name: 'Copy cdk.out to dist',
+    run: 'mkdir -p dist && cp -r cdk.out dist/cdk.out',
+  }
+]);
 project.buildWorkflow.addPostBuildJob('CloudFormation-lint', {
   runsOn: ['ubuntu-latest'],
   permissions: {
@@ -55,7 +55,7 @@ project.buildWorkflow.addPostBuildJob('CloudFormation-lint', {
     },
     {
       name: 'Run cfn-lint',
-      run: 'npx projen lint', // Lint script should be present in .projenrc.js
+      run: 'cfn-lint cdk.out/**/*.template.json -i W3005 W2001',
     },
   ],
 });
