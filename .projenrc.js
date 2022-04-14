@@ -23,7 +23,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   postBuildSteps: [{
     name: 'Copy cdk.out to dist',
     run: 'mkdir -p dist && cp -r cdk.out dist/cdk.out',
-  }]
+  }],
 });
 
 /**
