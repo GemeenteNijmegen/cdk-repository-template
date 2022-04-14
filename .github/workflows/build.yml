@@ -23,6 +23,8 @@ jobs:
         run: yarn install --check-files
       - name: build
         run: npx projen build
+      - name: Copy cdk.out to dist
+        run: cp -r cdk.out dist/cdk.out
       - id: self_mutation
         name: Find mutations
         run: |-
@@ -88,5 +90,7 @@ jobs:
           path: dist
       - name: Setup Cloud Formation Linter with Latest Version
         uses: scottbrenner/cfn-lint-action@v2
+      - name: Restore cdk.out directory
+        run: cp -r dist/cdk.out cdk.out
       - name: Run cfn-lint
         run: npx projen lint

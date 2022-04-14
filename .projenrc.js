@@ -21,6 +21,12 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   scripts: {
     lint: 'cfn-lint cdk.out/**/*.template.json -i W3005 W2001',
   },
+  postBuildSteps: [ // After release build
+    {
+      name: 'Copy cdk.out to dist',
+      run: 'cp -r cdk.out dist/cdk.out',
+    },
+  ],
 });
 
 /**
@@ -28,6 +34,10 @@ const project = new awscdk.AwsCdkTypeScriptApp({
  * Note: Not ideal as we would like to incldue the lint step in the
  * buidl process, however the setup of the linter cannot be added to
  * the existing workflow nor can the build task be altered.
+ *
+ * Currently using the dist folder to store the cloudformation templates
+ * A neater alternative is the artifactsDirectory configuration option,
+ * however changing the artifactsDirectory breaks the release build workflow.
  */
 project.buildWorkflow.addPostBuildJob('CloudFormation-lint', {
   runsOn: ['ubuntu-latest'],
@@ -38,6 +48,10 @@ project.buildWorkflow.addPostBuildJob('CloudFormation-lint', {
     {
       name: 'Setup Cloud Formation Linter with Latest Version',
       uses: 'scottbrenner/cfn-lint-action@v2',
+    },
+    {
+      name: 'Restore cdk.out directory',
+      run: 'cp -r dist/cdk.out cdk.out',
     },
     {
       name: 'Run cfn-lint',
