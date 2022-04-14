@@ -24,7 +24,7 @@ jobs:
       - name: build
         run: npx projen build
       - name: Copy cdk.out to dist
-        run: cp -r cdk.out dist/cdk.out
+        run: mkdir -p dist && cp -r cdk.out dist/cdk.out
       - id: self_mutation
         name: Find mutations
         run: |-

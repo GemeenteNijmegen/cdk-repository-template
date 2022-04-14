@@ -29,7 +29,7 @@ jobs:
       - name: release:production
         run: npx projen release:production
       - name: Copy cdk.out to dist
-        run: cp -r cdk.out dist/cdk.out
+        run: mkdir -p dist && cp -r cdk.out dist/cdk.out
       - name: Check for new commits
         id: git_remote
         run: echo ::set-output name=latest_commit::"$(git ls-remote origin -h ${{ github.ref }} | cut -f1)"

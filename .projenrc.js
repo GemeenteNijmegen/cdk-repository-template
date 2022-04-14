@@ -21,10 +21,10 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   scripts: {
     lint: 'cfn-lint cdk.out/**/*.template.json -i W3005 W2001',
   },
-  postBuildSteps: [ // After release build
+  postBuildSteps: [
     {
       name: 'Copy cdk.out to dist',
-      run: 'cp -r cdk.out dist/cdk.out',
+      run: 'mkdir -p dist && cp -r cdk.out dist/cdk.out',
     },
   ],
 });
