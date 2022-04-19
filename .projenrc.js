@@ -14,6 +14,19 @@ const project = new awscdk.AwsCdkTypeScriptApp({
       branches: ['acceptance'],
     },
   },
+  scripts: {
+    lint: 'cfn-lint cdk.out/**/*.template.json -i W3005 W2001',
+  },
+  deps: [
+    'cdk-nag@^2.0.0',
+  ],
+  gitignore: [
+    'test-reports/junit.xml',
+    'test/__snapshots__/*',
+    '.env',
+    '.vscode',
+    '.DS_Store',
+  ],
   // deps: [],                /* Runtime dependencies of this module. */
   // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
   // devDeps: [],             /* Build dependencies for this module. */

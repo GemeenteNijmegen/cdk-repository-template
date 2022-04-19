@@ -51,6 +51,7 @@
   },
   "dependencies": {
     "aws-cdk-lib": "^2.16.0",
+    "cdk-nag": "^2.0.0",
     "constructs": "^10.0.5"
   },
   "license": "EUPL-1.2",
