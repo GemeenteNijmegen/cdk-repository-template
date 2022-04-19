@@ -6,7 +6,6 @@ export class MyStack extends Stack {
   constructor(scope: Construct, id: string, props: StackProps = {}) {
     super(scope, id, props);
 
-    console.log('Test logging in cdk synth');
     // define resources here...
   }
 }
