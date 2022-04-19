@@ -1,6 +1,5 @@
 const { awscdk } = require('projen');
-const { JobPermission } = require('projen/lib/github/workflows-model');
-const { NodePackageManager } = require('projen/lib/javascript');
+
 const project = new awscdk.AwsCdkTypeScriptApp({
   projenVersion: '0.54.14',
   cdkVersion: '2.16.0',
