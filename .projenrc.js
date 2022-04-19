@@ -59,4 +59,13 @@ project.buildWorkflow.addPostBuildJob('CloudFormation-lint', {
   ],
 });
 
+/**
+ * Prevent suppression of output of cdk synth step for two reasons
+ * - MFA code question when AWS_PROFILE env. variable is set
+ * - Show cfn-nag output during synth step.
+ */
+const synth = project.tasks.tryFind('synth:silent');
+synth.reset();
+synth.exec('cdk synth -q');
+
 project.synth();
