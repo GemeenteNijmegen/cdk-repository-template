@@ -12,6 +12,7 @@
     "diff": "npx projen diff",
     "eject": "npx projen eject",
     "eslint": "npx projen eslint",
+    "lint": "npx projen lint",
     "package": "npx projen package",
     "post-compile": "npx projen post-compile",
     "post-upgrade": "npx projen post-upgrade",
@@ -50,6 +51,7 @@
   },
   "dependencies": {
     "aws-cdk-lib": "^2.16.0",
+    "cdk-nag": "^2.0.0",
     "constructs": "^10.0.5"
   },
   "license": "EUPL-1.2",
