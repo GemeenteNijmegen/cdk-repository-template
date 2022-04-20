@@ -1,7 +1,7 @@
 const { awscdk } = require('projen');
 
 const project = new awscdk.AwsCdkTypeScriptApp({
-  projenVersion: '0.54.14',
+  projenVersion: '0.54.34',
   cdkVersion: '2.16.0',
   license: 'EUPL-1.2',
   name: 'cdk-repository-template',
@@ -37,15 +37,6 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   // devDeps: [],             /* Build dependencies for this module. */
   // packageName: undefined,  /* The "name" in package.json. */
 });
-
-/**
- * Prevent suppression of output of cdk synth step for two reasons
- * - MFA code question when AWS_PROFILE env. variable is set
- * - Show cfn-nag output during synth step.
- */
-const synth = project.tasks.tryFind('synth:silent');
-synth.reset();
-synth.exec('cdk synth -q');
 
 /**
  * Add cfn-lint step to build after compiling.
