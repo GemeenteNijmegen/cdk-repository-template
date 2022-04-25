@@ -96,6 +96,7 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
         'result=$(diff -rq cdk.out.build cdk.out.base || true)',
         'echo $result',
         '[ -z "$result" ] && msg="No differences" || msg="Differences"',
+        'echo "Creating a comment on the PR..."',
         `gh pr comment $PR --body "$(echo $msg) ${comment}" -R $GITHUB_REPOSITORY`,
       ].join('; '),
       env: {
