@@ -36,21 +36,9 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   postBuildSteps: [
     {
       name: 'Save CloudFormation templates',
-      run: 'mkdir -p dist && cp cdk.out/* dist/'
+      run: 'mkdir -p dist && cp cdk.out/* dist/',
     },
-    /*{
-      name: 'Save CloudFormation templates',
-      uses: 'actions/upload-artifact@v3',
-      with: {
-        name: 'build-templates',
-        path: 'cdk.out',
-      },
-    },
-    {
-      name: 'Dummy file in dist to prevent workflow from failing',
-      run: 'mkdir -p dist && touch dist/dummy'
-    }*/
-  ]
+  ],
   // deps: [],                /* Runtime dependencies of this module. */
   // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
   // devDeps: [],             /* Build dependencies for this module. */
@@ -64,9 +52,9 @@ const postCompile = project.tasks.tryFind('post-compile');
 const lint = project.tasks.tryFind('lint');
 postCompile.spawn(lint);
 
-
-// project.buildWorkflow.addPostBuildSteps([]); // Contains a bug in the YAML format
-
+/**
+ * Add a build job for the target branch when a PR is made
+ */
 project.buildWorkflow.addPostBuildJob('build_target', {
   permissions: { contents: JobPermission.READ },
   runsOn: ['ubuntu-latest'],
@@ -104,6 +92,13 @@ project.buildWorkflow.addPostBuildJob('build_target', {
   ],
 });
 
+/**
+ * Add a job to do a diff between the CloudFormation templates of the build and
+ * the CloudFormation templates of the target branch build. If there are diffs add
+ * a comment to the PR with the differences found. 
+ * Note: currently cdk diff is not used as this required a list of all stacks to be
+ * passed to the cdk diff call. 
+ */
 project.buildWorkflow.addPostBuildJob('cfn-diff', {
   permissions: { contents: JobPermission.READ },
   runsOn: ['ubuntu-latest'],
@@ -118,22 +113,12 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
       },
     },
     {
-      name: "Download build CloudFormation templates",
-      run: 'mkdir -p cdk.out && cp dist/* cdk.out/'
+      name: 'Download build CloudFormation templates',
+      run: 'mkdir -p cdk.out.build && cp dist/* cdk.out.build/',
     },
-    /*
-    {
-      name: 'Download build CloudFomration templates',
-      uses: 'actions/download-artifact@v3',
-      with: {
-        name: 'build-templates',
-        path: 'cdk.out.build',
-      },
-    },
-    */
     {
       name: 'Diff',
-      run: 'diff -r -q cdk.out.build cdk.out.base', // Maybe use cdk diff here?
+      run: 'diff -r -q cdk.out.build cdk.out.base', // TODO: use cdk diff here.
     },
   ],
 });

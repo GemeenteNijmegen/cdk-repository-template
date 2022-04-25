@@ -126,6 +126,6 @@ jobs:
           name: base-branch-templates
           path: cdk.out.base
       - name: Download build CloudFormation templates
-        run: mkdir -p cdk.out && cp dist/* cdk.out/
+        run: mkdir -p cdk.out.build && cp dist/* cdk.out.build/
       - name: Diff
         run: diff -r -q cdk.out.build cdk.out.base

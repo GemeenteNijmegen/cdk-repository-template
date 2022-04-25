@@ -31,16 +31,7 @@ jobs:
       - name: release:production
         run: npx projen release:production
       - name: Save CloudFormation templates
-<<<<<<< HEAD
         run: mkdir -p dist && cp cdk.out/* dist/
-=======
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-templates
-          path: cdk.out
-      - name: Dummy file in dist to prevent workflow from failing
-        run: mkdir -p dist && touch dist/dummy
->>>>>>> b0518a4e21fd683cd8f58247aa820933d7b5b46b
       - name: Check for new commits
         id: git_remote
         run: echo ::set-output name=latest_commit::"$(git ls-remote origin -h ${{ github.ref }} | cut -f1)"
