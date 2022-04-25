@@ -121,7 +121,7 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
     },
     {
       name: 'Diff',
-      run: 'result=$(diff -r -q cdk.out.build cdk.out.base); echo $result > diff.txt; [ -z "$result" ] && exitcode=0 || echo exitcode=1', // TODO: use cdk diff here.
+      run: 'result=$(diff -r -q cdk.out.build cdk.out.base) || true; echo $result > diff.txt; [ -z "$result" ] && exitcode=0 || exitcode=1', // TODO: use cdk diff here.
     },
     {
       name: 'Diff in CloudFormation',

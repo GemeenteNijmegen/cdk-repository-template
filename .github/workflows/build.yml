@@ -129,7 +129,7 @@ jobs:
       - name: Download build CloudFormation templates
         run: mkdir -p cdk.out.build && cp dist/* cdk.out.build/
       - name: Diff
-        run: result=$(diff -r -q cdk.out.build cdk.out.base); echo $result > diff.txt; [ -z "$result" ] && exitcode=0 || echo exitcode=1
+        run: result=$(diff -r -q cdk.out.build cdk.out.base); echo $result > diff.txt; [ -z "$result" ] && exitcode=0 || exitcode=1
       - name: Diff in CloudFormation
         if: ${{ env.exitcode == 1 }}
         run: gh pr comment $PR --body-file diff.txt -R $GITHUB_REPOSITORY
