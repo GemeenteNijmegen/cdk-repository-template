@@ -89,7 +89,7 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
     },
     {
       name: 'CloudFormation diff',
-      run: `result=$(diff -r -q cdk.out.build cdk.out.base) || true; 
+      run: `result=$(diff -r -q cdk.out.build cdk.out.base || true); 
         echo $result; 
         [ -z "$result" ] && msg=$(echo "No differences") || msg=$(echo "Differences"); 
         gh pr comment $PR --body "$(echo $msg) between CloudFormation templates on base branch and this branch." -R $GITHUB_REPOSITORY`, // TODO: use cdk diff here.
