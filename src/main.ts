@@ -18,7 +18,7 @@ const devEnv = {
 
 const app = new App();
 
-new MyStack(app, 'cdk-repository-template-dev', { env: devEnv });
+new MyStack(app, 'cdk-repository-template-dev-name-change', { env: devEnv });
 // new MyStack(app, 'cdk-repository-template-prod', { env: prodEnv });
 
 /**
