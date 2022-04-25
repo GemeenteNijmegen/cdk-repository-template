@@ -65,6 +65,7 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
       with: {
         ref: '${{ github.base_ref }}',
         repository: '${{ github.event.pull_request.head.repo.full_name }}',
+        clean: false,
       },
     },
     {
@@ -81,7 +82,7 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
     },
     {
       name: 'Download build CloudFormation templates',
-      run: 'mkdir -p cdk.out.build && cp dist/* cdk.out.build/',
+      run: 'mkdir -p cdk.out.build && cp dist/* cdk.out.build/ && mv cdk.out cdk.out.base',
     },
     {
       name: 'CloudFormation diff',
