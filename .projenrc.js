@@ -58,8 +58,6 @@ postCompile.spawn(lint);
 project.buildWorkflow.addPostBuildJob('build_target', {
   permissions: { contents: JobPermission.READ },
   runsOn: ['ubuntu-latest'],
-  //needs: [], // No need to wait for selfmutation
-  //if: 'true', // Always run independent of sell mutation
   steps: [
     {
       name: 'Checkout',
@@ -121,35 +119,16 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
     },
     {
       name: 'Diff',
-      run: 'result=$(diff -r -q cdk.out.build cdk.out.base) || true; echo $result; [ -z "$result" ] && gh pr comment $PR --body "No differences in CloudFormation templates" -R $GITHUB_REPOSITORY || gh pr comment $PR --body "$(echo $result)" -R $GITHUB_REPOSITORY', // TODO: use cdk diff here.
+      run: `result=$(diff -r -q cdk.out.build cdk.out.base) || true; 
+        echo $result; 
+        [ -z "$result" ] && msg=$(echo "No differences") || msg=$(echo "Differences"); 
+        gh pr comment $PR --body "$(echo $msg) in CloudFormation templates between base branch and this branch." -R $GITHUB_REPOSITORY`, // TODO: use cdk diff here.
       env: {
         GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}',
         GITHUB_REPOSITORY: '${{ github.repository }}',
         PR: '${{ github.event.pull_request.number }}',
-      },
-    },/*
-    {
-      name: 'Diff in CloudFormation',
-      if: '${{ env.changed == 1 }}',
-      run: 'echo $CHANGED; gh pr comment $PR --body-file diff.txt -R $GITHUB_REPOSITORY',
-      env: {
-        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}',
-        GITHUB_REPOSITORY: '${{ github.repository }}',
-        PR: '${{ github.event.pull_request.number }}',
-        CHANGED: '${{ env.changed }}',
       },
     },
-    {
-      name: 'No diff in CloudFormation',
-      if: '${{ env.changed == 0 }}',
-      run: 'echo $CHANGED; gh pr comment $PR --body "No differences in CloudFormation templates" -R $GITHUB_REPOSITORY',
-      env: {
-        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}',
-        GITHUB_REPOSITORY: '${{ github.repository }}',
-        PR: '${{ github.event.pull_request.number }}',
-        CHANGED: '${{ env.changed }}',
-      },
-    },*/
   ],
 });
 

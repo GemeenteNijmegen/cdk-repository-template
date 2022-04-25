@@ -129,7 +129,11 @@ jobs:
       - name: Download build CloudFormation templates
         run: mkdir -p cdk.out.build && cp dist/* cdk.out.build/
       - name: Diff
-        run: result=$(diff -r -q cdk.out.build cdk.out.base) || true; echo $result; [ -z "$result" ] && gh pr comment $PR --body "No differences in CloudFormation templates" -R $GITHUB_REPOSITORY || gh pr comment $PR --body "$(echo $result)" -R $GITHUB_REPOSITORY
+        run: |-
+          result=$(diff -r -q cdk.out.build cdk.out.base) || true; 
+                  echo $result; 
+                  [ -z "$result" ] && msg=$(echo "No differences") || msg=$(echo "Differences"); 
+                  gh pr comment $PR --body "$(echo $msg) in CloudFormation templates between base branch and this branch." -R $GITHUB_REPOSITORY
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
