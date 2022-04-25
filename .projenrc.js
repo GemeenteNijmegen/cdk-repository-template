@@ -36,7 +36,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   postBuildSteps: [
     {
       name: 'Save CloudFormation templates',
-      run: 'mkdir -p dist && cp cdk.out/* dist/'
+      run: 'mkdir -p dist && cp cdk.out/* dist/',
     },
     /*{
       name: 'Save CloudFormation templates',
@@ -50,7 +50,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
       name: 'Dummy file in dist to prevent workflow from failing',
       run: 'mkdir -p dist && touch dist/dummy'
     }*/
-  ]
+  ],
   // deps: [],                /* Runtime dependencies of this module. */
   // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
   // devDeps: [],             /* Build dependencies for this module. */
@@ -118,8 +118,8 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
       },
     },
     {
-      name: "Download build CloudFormation templates",
-      run: 'mkdir -p cdk.out && cp dist/* cdk.out/'
+      name: 'Download build CloudFormation templates',
+      run: 'mkdir -p cdk.out && cp dist/* cdk.out/',
     },
     /*
     {
