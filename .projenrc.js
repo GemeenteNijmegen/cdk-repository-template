@@ -127,7 +127,7 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
         GITHUB_REPOSITORY: '${{ github.repository }}',
         PR: '${{ github.event.pull_request.number }}',
       },
-    },/*
+    }, /*
     {
       name: 'Diff in CloudFormation',
       if: '${{ env.changed == 1 }}',
