@@ -100,7 +100,7 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
         'echo $result',
         '[ -z "$result" ] && msg="No differences" || msg="Differences"',
         'echo "Creating a comment on the PR..."',
-        `gh pr comment $PR --body "$(echo $msg) ${comment}" -R $GITHUB_REPOSITORY`,
+        `gh pr comment $PR --body "$(echo $msg) ${comment} \n <details>$(echo $result)</details>" -R $GITHUB_REPOSITORY`,
       ].join('; '),
       env: {
         GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}',
