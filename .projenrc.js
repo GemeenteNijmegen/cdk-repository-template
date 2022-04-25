@@ -36,6 +36,10 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   postBuildSteps: [
     {
       name: 'Save CloudFormation templates',
+      run: 'mkdir -p dist && cp cdk.out/* dist/'
+    },
+    /*{
+      name: 'Save CloudFormation templates',
       uses: 'actions/upload-artifact@v3',
       with: {
         name: 'build-templates',
@@ -45,7 +49,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     {
       name: 'Dummy file in dist to prevent workflow from failing',
       run: 'mkdir -p dist && touch dist/dummy'
-    }
+    }*/
   ]
   // deps: [],                /* Runtime dependencies of this module. */
   // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
@@ -114,6 +118,11 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
       },
     },
     {
+      name: "Download build CloudFormation templates",
+      run: 'mkdir -p cdk.out && cp dist/* cdk.out/'
+    },
+    /*
+    {
       name: 'Download build CloudFomration templates',
       uses: 'actions/download-artifact@v3',
       with: {
@@ -121,6 +130,7 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
         path: 'cdk.out.build',
       },
     },
+    */
     {
       name: 'Diff',
       run: 'diff -r -q cdk.out.build cdk.out.base', // Maybe use cdk diff here?

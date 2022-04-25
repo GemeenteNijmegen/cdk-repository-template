@@ -26,10 +26,7 @@ jobs:
       - name: build
         run: npx projen build
       - name: Save CloudFormation templates
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-templates
-          path: cdk.out
+        run: mkdir -p dist && cp cdk.out/* dist/
       - id: self_mutation
         name: Find mutations
         run: |-
@@ -128,10 +125,7 @@ jobs:
         with:
           name: base-branch-templates
           path: cdk.out.base
-      - name: Download build CloudFomration templates
-        uses: actions/download-artifact@v3
-        with:
-          name: build-templates
-          path: cdk.out.build
+      - name: Download build CloudFormation templates
+        run: mkdir -p cdk.out && cp dist/* cdk.out/
       - name: Diff
         run: diff -r -q cdk.out.build cdk.out.base
