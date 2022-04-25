@@ -81,11 +81,12 @@ jobs:
             git add .
             git commit -s -m "chore: self mutation"
             git push origin HEAD:${{ github.event.pull_request.head.ref }}
-  build_target:
+  cfn-diff:
     needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      pull-requests: write
     if: "! needs.build.outputs.self_mutation_happened"
     steps:
       - name: Download build artifacts
@@ -93,6 +94,8 @@ jobs:
         with:
           name: build-artifact
           path: dist
+      - name: Keep build CloudFormation templates
+        run: mkdir -p ../cdk.out.build && cp dist/* ../cdk.out.build/
       - name: Checkout
         uses: actions/checkout@v2
         with:
@@ -104,34 +107,13 @@ jobs:
         run: yarn install --check-files
       - name: Build
         run: yarn build
-      - name: Save CloudFormation templates
-        uses: actions/upload-artifact@v3
-        with:
-          name: base-branch-templates
-          path: cdk.out
-  cfn-diff:
-    needs:
-      - build
-      - build_target
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    if: "! needs.build.outputs.self_mutation_happened"
-    steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: build-artifact
-          path: dist
-      - name: Download base branch CloudFomration templates
-        uses: actions/download-artifact@v3
-        with:
-          name: base-branch-templates
-          path: cdk.out.base
-      - name: Download build CloudFomration templates
-        uses: actions/download-artifact@v3
-        with:
-          name: build-templates
-          path: cdk.out.build
-      - name: Diff
-        run: diff -r -q cdk.out.build cdk.out.base
+      - name: Prepare CloudFormation template directories
+        run: mv ../cdk.out.build cdk.out.build && mv cdk.out cdk.out.base
+      - name: CloudFormation diff
+        run: |-
+          result="$(diff -rq cdk.out.build cdk.out.base || true)"; echo "$result"; [ -z "$result" ] && msg="No differences" || msg="Differences"; echo "Creating a comment on the PR..."; gh pr comment $PR --body "$(echo $msg) between CloudFormation templates on base branch and this branch. 
+           <details><pre>$(echo "$result")</pre></details>" -R $GITHUB_REPOSITORY
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
