@@ -30,6 +30,8 @@ jobs:
         with:
           name: build-templates
           path: cdk.out
+      - name: Dummy file in dist to prevent workflow from failing
+        run: mkdir -p dist && touch dist/dummy
       - id: self_mutation
         name: Find mutations
         run: |-
