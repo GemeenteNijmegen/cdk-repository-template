@@ -95,9 +95,9 @@ project.buildWorkflow.addPostBuildJob('build_target', {
 /**
  * Add a job to do a diff between the CloudFormation templates of the build and
  * the CloudFormation templates of the target branch build. If there are diffs add
- * a comment to the PR with the differences found. 
+ * a comment to the PR with the differences found.
  * Note: currently cdk diff is not used as this required a list of all stacks to be
- * passed to the cdk diff call. 
+ * passed to the cdk diff call.
  */
 project.buildWorkflow.addPostBuildJob('cfn-diff', {
   permissions: { contents: JobPermission.READ },
