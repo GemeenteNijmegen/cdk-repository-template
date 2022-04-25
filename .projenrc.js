@@ -60,12 +60,15 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
   runsOn: ['ubuntu-latest'],
   steps: [
     {
+      name: 'Keep build CloudFormation templates',
+      run: 'mkdir -p ../cdk.out.build && cp dist/* ../cdk.out.build/',
+    },
+    {
       name: 'Checkout',
       uses: 'actions/checkout@v2',
       with: {
         ref: '${{ github.base_ref }}',
         repository: '${{ github.event.pull_request.head.repo.full_name }}',
-        clean: false,
       },
     },
     {
@@ -81,8 +84,8 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
       run: 'yarn build',
     },
     {
-      name: 'Download build CloudFormation templates',
-      run: 'mkdir -p cdk.out.build && cp dist/* cdk.out.build/ && mv cdk.out cdk.out.base',
+      name: 'Prepare CloudFormation template directories',
+      run: 'mv ../cdk.out.build cdk.out.build && mv cdk.out cdk.out.base',
     },
     {
       name: 'CloudFormation diff',
