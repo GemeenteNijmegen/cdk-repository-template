@@ -113,6 +113,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      pull-requests: write
     if: "! needs.build.outputs.self_mutation_happened"
     steps:
       - name: Download build artifacts
@@ -128,4 +129,18 @@ jobs:
       - name: Download build CloudFormation templates
         run: mkdir -p cdk.out.build && cp dist/* cdk.out.build/
       - name: Diff
-        run: diff -r -q cdk.out.build cdk.out.base
+        run: diff -r -q cdk.out.build cdk.out.base >> diff.txt; exitcode=$?;
+      - name: Diff in CloudFormation
+        if: ${{ env.exitcode == 1 }}
+        run: gh pr comment $PR --body-file diff.txt -R $GITHUB_REPOSITORY
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+      - name: No diff in CloudFormation
+        if: ${{ env.exitcode == 0 }}
+        run: gh pr comment $PR --body "No differences in CloudFormation templates" -R $GITHUB_REPOSITORY
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
