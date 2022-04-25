@@ -42,15 +42,11 @@ const project = new awscdk.AwsCdkTypeScriptApp({
         path: 'cdk.out',
       },
     },
-<<<<<<< HEAD
     {
       name: 'Dummy file in dist to prevent workflow from failing',
       run: 'mkdir -p dist && touch dist/dummy'
     }
   ]
-=======
-  ],
->>>>>>> 243e5d789c439ba444293489854f73ab39f6cef7
   // deps: [],                /* Runtime dependencies of this module. */
   // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
   // devDeps: [],             /* Build dependencies for this module. */
