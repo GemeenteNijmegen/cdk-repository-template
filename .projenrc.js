@@ -121,8 +121,13 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
     },
     {
       name: 'Diff',
-      run: 'result=$(diff -r -q cdk.out.build cdk.out.base) || true; echo $result > diff.txt; echo $result; [ -z "$result" ] && changed=0 || changed=1', // TODO: use cdk diff here.
-    },
+      run: 'result=$(diff -r -q cdk.out.build cdk.out.base) || true; echo $result; [ -z "$result" ] && gh pr comment $PR --body "No differences in CloudFormation templates" -R $GITHUB_REPOSITORY || gh pr comment $PR --body "$(echo $result)" -R $GITHUB_REPOSITORY', // TODO: use cdk diff here.
+      env: {
+        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}',
+        GITHUB_REPOSITORY: '${{ github.repository }}',
+        PR: '${{ github.event.pull_request.number }}',
+      },
+    },/*
     {
       name: 'Diff in CloudFormation',
       if: '${{ env.changed == 1 }}',
@@ -144,7 +149,7 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
         PR: '${{ github.event.pull_request.number }}',
         CHANGED: '${{ env.changed }}',
       },
-    },
+    },*/
   ],
 });
 
