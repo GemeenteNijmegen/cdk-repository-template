@@ -129,18 +129,20 @@ jobs:
       - name: Download build CloudFormation templates
         run: mkdir -p cdk.out.build && cp dist/* cdk.out.build/
       - name: Diff
-        run: result=$(diff -r -q cdk.out.build cdk.out.base) || true; echo $result > diff.txt; [ -z "$result" ] && exitcode=0 || exitcode=1
+        run: result=$(diff -r -q cdk.out.build cdk.out.base) || true; echo $result > diff.txt; echo $result; [ -z "$result" ] && changed=0 || changed=1
       - name: Diff in CloudFormation
-        if: ${{ env.exitcode == 1 }}
-        run: gh pr comment $PR --body-file diff.txt -R $GITHUB_REPOSITORY
+        if: ${{ env.changed == 1 }}
+        run: echo $CHANGED; gh pr comment $PR --body-file diff.txt -R $GITHUB_REPOSITORY
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           PR: ${{ github.event.pull_request.number }}
+          CHANGED: ${{ env.changed }}
       - name: No diff in CloudFormation
-        if: ${{ env.exitcode == 0 }}
-        run: gh pr comment $PR --body "No differences in CloudFormation templates" -R $GITHUB_REPOSITORY
+        if: ${{ env.changed == 0 }}
+        run: echo $CHANGED; gh pr comment $PR --body "No differences in CloudFormation templates" -R $GITHUB_REPOSITORY
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           PR: ${{ github.event.pull_request.number }}
+          CHANGED: ${{ env.changed }}
