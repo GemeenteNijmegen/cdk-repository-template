@@ -39,10 +39,10 @@ const project = new awscdk.AwsCdkTypeScriptApp({
       uses: 'actions/upload-artifact@v3',
       with: {
         name: 'build-templates',
-        path: 'cdk.out'
+        path: 'cdk.out',
       },
-    }
-  ]
+    },
+  ],
   // deps: [],                /* Runtime dependencies of this module. */
   // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
   // devDeps: [],             /* Build dependencies for this module. */
@@ -62,16 +62,16 @@ postCompile.spawn(lint);
 project.buildWorkflow.addPostBuildJob('build_target', {
   permissions: { contents: JobPermission.READ },
   runsOn: ['ubuntu-latest'],
-  //needs: [], // No need to wait for selfmutation 
+  //needs: [], // No need to wait for selfmutation
   //if: 'true', // Always run independent of sell mutation
   steps: [
     {
       name: 'Checkout',
       uses: 'actions/checkout@v2',
       with: {
-        ref: "${{ github.base_ref }}",
-        repository: "${{ github.event.pull_request.head.repo.full_name }}",
-      }
+        ref: '${{ github.base_ref }}',
+        repository: '${{ github.event.pull_request.head.repo.full_name }}',
+      },
     },
     {
       name: 'Setup cfn-lint',
@@ -90,10 +90,10 @@ project.buildWorkflow.addPostBuildJob('build_target', {
       uses: 'actions/upload-artifact@v3',
       with: {
         name: 'base-branch-templates',
-        path: 'cdk.out'
+        path: 'cdk.out',
       },
     },
-  ]
+  ],
 });
 
 project.buildWorkflow.addPostBuildJob('cfn-diff', {
@@ -106,7 +106,7 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
       uses: 'actions/download-artifact@v3',
       with: {
         name: 'base-branch-templates',
-        path: 'cdk.out.base'
+        path: 'cdk.out.base',
       },
     },
     {
@@ -114,17 +114,15 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
       uses: 'actions/download-artifact@v3',
       with: {
         name: 'build-templates',
-        path: 'cdk.out.build'
+        path: 'cdk.out.build',
       },
     },
     {
       name: 'Diff',
-      run: 'diff -r -q cdk.out.build cdk.out.base' // Maybe use cdk diff here?
+      run: 'diff -r -q cdk.out.build cdk.out.base', // Maybe use cdk diff here?
     },
-  ]
-})
-
-
+  ],
+});
 
 
 project.synth();
