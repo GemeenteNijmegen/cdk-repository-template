@@ -100,9 +100,9 @@ project.buildWorkflow.addPostBuildJob('build_target', {
  * passed to the cdk diff call.
  */
 project.buildWorkflow.addPostBuildJob('cfn-diff', {
-  permissions: { 
-    contents: JobPermission.READ, 
-    pullRequests: JobPermission.WRITE 
+  permissions: {
+    contents: JobPermission.READ,
+    pullRequests: JobPermission.WRITE,
   },
   runsOn: ['ubuntu-latest'],
   needs: ['build', 'build_target'],
@@ -121,27 +121,27 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
     },
     {
       name: 'Diff',
-      run: 'diff -r -q cdk.out.build cdk.out.base >> diff.txt; exitcode=$?;', // TODO: use cdk diff here.
+      run: 'result=$(diff -r -q cdk.out.build cdk.out.base); echo $result > diff.txt; [ -z "$result" ] && exitcode=0 || echo exitcode=1', // TODO: use cdk diff here.
     },
     {
       name: 'Diff in CloudFormation',
       if: '${{ env.exitcode == 1 }}',
       run: 'gh pr comment $PR --body-file diff.txt -R $GITHUB_REPOSITORY',
       env: {
-        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}",
-        GITHUB_REPOSITORY: "${{ github.repository }}",
-        PR: "${{ github.event.pull_request.number }}",
-      }
+        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}',
+        GITHUB_REPOSITORY: '${{ github.repository }}',
+        PR: '${{ github.event.pull_request.number }}',
+      },
     },
     {
       name: 'No diff in CloudFormation',
       if: '${{ env.exitcode == 0 }}',
       run: 'gh pr comment $PR --body "No differences in CloudFormation templates" -R $GITHUB_REPOSITORY',
       env: {
-        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}",
-        GITHUB_REPOSITORY: "${{ github.repository }}",
-        PR: "${{ github.event.pull_request.number }}",
-      }
+        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}',
+        GITHUB_REPOSITORY: '${{ github.repository }}',
+        PR: '${{ github.event.pull_request.number }}',
+      },
     },
   ],
 });
