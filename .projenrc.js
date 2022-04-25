@@ -59,7 +59,7 @@ postCompile.spawn(lint);
  */
 const comment = 'between CloudFormation templates on base branch and this branch.';
 project.buildWorkflow.addPostBuildJob('cfn-diff', {
-  permissions: { 
+  permissions: {
     contents: JobPermission.READ,
     pullRequests: JobPermission.WRITE,
   },
