@@ -36,11 +36,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   postBuildSteps: [
     {
       name: 'Save CloudFormation templates',
-      uses: 'actions/upload-artifact@v3',
-      with: {
-        name: 'build-templates',
-        path: 'cdk.out',
-      },
+      run: 'mkdir -p dist && cp cdk.out/* dist/',
     },
   ],
   // deps: [],                /* Runtime dependencies of this module. */
