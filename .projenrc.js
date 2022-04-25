@@ -55,7 +55,7 @@ postCompile.spawn(lint);
 /**
  * Add a build job for the target branch when a PR is made
  */
-project.buildWorkflow.addPostBuildJob('build_target', {
+project.buildWorkflow.addPostBuildJob('cfn-diff', {
   permissions: { contents: JobPermission.READ },
   runsOn: ['ubuntu-latest'],
   steps: [
@@ -80,13 +80,30 @@ project.buildWorkflow.addPostBuildJob('build_target', {
       run: 'yarn build',
     },
     {
+      name: 'Download build CloudFormation templates',
+      run: 'mkdir -p cdk.out.build && cp dist/* cdk.out.build/',
+    },
+    {
+      name: 'CloudFormation diff',
+      run: `result=$(diff -r -q cdk.out.build cdk.out.base) || true; 
+        echo $result; 
+        [ -z "$result" ] && msg=$(echo "No differences") || msg=$(echo "Differences"); 
+        gh pr comment $PR --body "$(echo $msg) between CloudFormation templates on base branch and this branch." -R $GITHUB_REPOSITORY`, // TODO: use cdk diff here.
+      env: {
+        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}',
+        GITHUB_REPOSITORY: '${{ github.repository }}',
+        PR: '${{ github.event.pull_request.number }}',
+      },
+    },
+    /*
+    {
       name: 'Save CloudFormation templates',
       uses: 'actions/upload-artifact@v3',
       with: {
         name: 'base-branch-templates',
         path: 'cdk.out',
       },
-    },
+    },*/
   ],
 });
 
@@ -97,6 +114,8 @@ project.buildWorkflow.addPostBuildJob('build_target', {
  * Note: currently cdk diff is not used as this required a list of all stacks to be
  * passed to the cdk diff call.
  */
+
+/*
 project.buildWorkflow.addPostBuildJob('cfn-diff', {
   permissions: {
     contents: JobPermission.READ,
@@ -119,9 +138,9 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
     },
     {
       name: 'Diff',
-      run: `result=$(diff -r -q cdk.out.build cdk.out.base) || true; 
-        echo $result; 
-        [ -z "$result" ] && msg=$(echo "No differences") || msg=$(echo "Differences"); 
+      run: `result=$(diff -r -q cdk.out.build cdk.out.base) || true;
+        echo $result;
+        [ -z "$result" ] && msg=$(echo "No differences") || msg=$(echo "Differences");
         gh pr comment $PR --body "$(echo $msg) in CloudFormation templates between base branch and this branch." -R $GITHUB_REPOSITORY`, // TODO: use cdk diff here.
       env: {
         GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}',
@@ -131,6 +150,6 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
     },
   ],
 });
-
+*/
 
 project.synth();
