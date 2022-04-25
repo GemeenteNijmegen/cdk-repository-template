@@ -108,7 +108,7 @@ jobs:
         run: mv ../cdk.out.build cdk.out.build && mv cdk.out cdk.out.base
       - name: CloudFormation diff
         run: |-
-          result=$(diff -rq cdk.out.build cdk.out.base || true); echo "$result"; [ -z "$result" ] && msg="No differences" || msg="Differences"; echo "Creating a comment on the PR..."; gh pr comment $PR --body "$(echo $msg) between CloudFormation templates on base branch and this branch. 
+          result="$(diff -rq cdk.out.build cdk.out.base || true)"; echo "$result"; [ -z "$result" ] && msg="No differences" || msg="Differences"; echo "Creating a comment on the PR..."; gh pr comment $PR --body "$(echo $msg) between CloudFormation templates on base branch and this branch. 
            <details>$(echo "$result")</details>" -R $GITHUB_REPOSITORY
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
