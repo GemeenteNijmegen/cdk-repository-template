@@ -41,6 +41,10 @@ const project = new awscdk.AwsCdkTypeScriptApp({
         name: 'build-templates',
         path: 'cdk.out'
       },
+    },
+    {
+      name: 'Dummy file in dist to prevent workflow from failing',
+      run: 'mkdir -p dist && touch dist/dummy'
     }
   ]
   // deps: [],                /* Runtime dependencies of this module. */
