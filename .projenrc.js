@@ -47,10 +47,12 @@ const project = new awscdk.AwsCdkTypeScriptApp({
 
 /**
  * Add cfn-lint step to build after compiling.
+ * Note: Currently disabled as this results in problems when building
+ * usign CodeBuild...
  */
-const postCompile = project.tasks.tryFind('post-compile');
-const lint = project.tasks.tryFind('lint');
-postCompile.spawn(lint);
+// const postCompile = project.tasks.tryFind('post-compile');
+// const lint = project.tasks.tryFind('lint');
+// postCompile.spawn(lint);
 
 /**
  * A job to build the base branch and execute a diff on the build cdk.out and base
