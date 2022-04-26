@@ -98,11 +98,11 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
     {
       name: 'CloudFormation diff', // TODO: use cdk diff here.
       run: [
-        'result="$(git diff --no-index --output diff.txt cdk.out.source cdk.out.base || true)"',
+        '$(git diff --no-index --output diff.txt cdk.out.source cdk.out.base || true',
         'cat diff.txt',
         '[ -s diff.txt ] && msg="Differences" || msg="No differences"',
         'echo "Creating a comment on the PR..."',
-        `gh pr comment $PR --body "$(echo $msg) ${comment} \n <details><pre>$(echo "$result")</pre></details>" -R $GITHUB_REPOSITORY`,
+        `gh pr comment $PR --body "$(echo $msg) ${comment} \n <details><pre>$(cat diff.txt)</pre></details>" -R $GITHUB_REPOSITORY`,
       ].join('; '),
       env: {
         GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}',
