@@ -36,7 +36,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   postBuildSteps: [
     {
       name: 'Save CloudFormation templates',
-      run: 'mkdir -p dist && cp cdk.out/* dist/',
+      run: 'mkdir -p dist && tar -czvf ./dist/cdk.out.tar.gz ./cdk.out',
     },
   ],
   // deps: [],                /* Runtime dependencies of this module. */
@@ -69,7 +69,10 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
   steps: [
     {
       name: 'Keep build CloudFormation templates',
-      run: 'mkdir -p ../cdk.out.build && cp dist/* ../cdk.out.build/',
+      run: [
+        'tar -xzvf ./dist/cdk.out.tar.gz -C ../',
+        'mv ../cdk.out ../cdk.out.source',
+      ].join(' && '),
     },
     {
       name: 'Checkout',
@@ -93,7 +96,7 @@ project.buildWorkflow.addPostBuildJob('cfn-diff', {
     },
     {
       name: 'Prepare CloudFormation template directories',
-      run: 'mv ../cdk.out.build cdk.out.source && mv cdk.out cdk.out.base',
+      run: 'mv ../cdk.out.source cdk.out.source && mv cdk.out cdk.out.base',
     },
     {
       name: 'CloudFormation diff', // TODO: use cdk diff here.
